@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { content } from "../content";
 
 export default function HomePage() {
   const router = useRouter();
@@ -21,12 +20,13 @@ export default function HomePage() {
 
         {/* Headline */}
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 leading-tight">
-          {content.landing.headline}
+          Surfez sur des vagues parfaites dans une eau chaude.
         </h1>
 
         {/* Subheadline */}
         <p className="text-gray-600 text-base sm:text-lg mb-8">
-          {content.landing.subheadline}
+          Découvrez nos séjours surf & yoga pour tous les niveaux.
+          Réservez votre aventure en quelques minutes.
         </p>
 
         {/* CTA Button */}
@@ -34,12 +34,12 @@ export default function HomePage() {
           onClick={() => router.push("/checkout/1-package")}
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg px-10 py-4 rounded-xl transition-colors shadow-md mb-6"
         >
-          {content.landing.cta}
+          Réserver maintenant
         </button>
 
         {/* Reassurance */}
         <p className="text-gray-400 text-sm">
-          {content.landing.reassurance}
+          Paiement sécurisé &bull; Dates flexibles &bull; Aucun frais caché
         </p>
       </div>
     </div>
