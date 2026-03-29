@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/checkout/1-package',
+        permanent: true,
+      },
+    ];
+  },
   // Server Actions are available by default in Next.js 14+
   // No need for experimental.serverActions configuration
   
