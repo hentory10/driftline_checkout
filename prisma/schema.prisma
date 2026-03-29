@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Destination {
+  id        String    @id @default(uuid())
+  name      String
+  packages  Package[]
+}
+
+model Package {
+  id            String        @id @default(uuid())
+  name          String
+  description   String
+  price         Int
+  destination   Destination   @relation(fields: [destinationId], references: [id])
+  destinationId String
+  surfLevels    SurfLevel[]   @relation("PackageSurfLevels")
+  bookings      Booking[]
+}
+
+model SurfLevel {
+  id        String    @id @default(uuid())
+  level     String
+  packages  Package[] @relation("PackageSurfLevels")
+}
+
+model Room {
+  id        String    @id @default(uuid())
+  name      String
+  description String
+  price     Int
+  capacity  Int
+  bookings  Booking[]
+}
+
+model AddOn {
+  id        String    @id @default(uuid())
+  name      String
+  price     Int
+  bookingAddOns BookingAddOn[]
+}
+
+model Traveller {
+  id        String    @id @default(uuid())
+  name      String
+  firstName String?
+  lastName  String?
+  email     String?
+  year      String?
+  month     String?
+  day       String?
+  country   String?
+  phone     String?
+  surfLevel String?
+  gender    String?
+  booking   Booking?  @relation(fields: [bookingId], references: [id])
+  bookingId String?
+}
+
+model Booking {
+  id                    String         @id @default(uuid())
+  package               Package        @relation(fields: [packageId], references: [id])
+  packageId             String
+  packageName           String?
+  room                  Room           @relation(fields: [roomId], references: [id])
+  roomId                String
+  roomName              String?
+  arrivalDate           DateTime
+  checkoutDate          DateTime?
+  duration              Int?
+  durationLabel         String?
+  people                Int
+  travellerCount        Int?
+  // All Travellers Information (comma-separated)
+  allTravellerNames     String?
+  allTravellerFirstNames String?
+  allTravellerLastNames String?
+  allTravellerEmails    String?
+  allTravellerPhones    String?
+  allTravellerCountries String?
+  allTravellerAges      String?
+  allTravellerBirthDates String?
+  allTravellerSurfLevels String?
+  allTravellerGenders   String?
+  // Add-Ons Information
+  addOnNames            String?
+  addOnIds              String?
+  addOnCount            Int?
+  // Pricing Information
+  packagePrice          Int?
+  roomPrice             Int?
+  subtotal              Int?
+  addOnsTotal           Int?
+  insuranceAmount       Int?
+  total                 Int
+  currency              String?        @default("EUR")
+  // Booking Options
+  insurance             Boolean
+  airportTransfer       Boolean        @default(false)
+  paymentType           String
+  // Status & Metadata
+  bookingStatus         String?        @default("confirmed")
+  notes                 String?
+  travellers            Traveller[]
+  bookingAddOns         BookingAddOn[]
+  createdAt             DateTime       @default(now())
+}
+
+model BookingAddOn {
+  id         String   @id @default(uuid())
+  booking    Booking  @relation(fields: [bookingId], references: [id])
+  bookingId  String
+  addOn      AddOn    @relation(fields: [addOnId], references: [id])
+  addOnId    String
+} 

@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-lapoint-yellow text-lapoint-dark font-sans;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-bold;
+}
+
+.card {
+  @apply bg-lapoint-card rounded-xl shadow-sm border border-lapoint-border p-6;
+}
+
+.btn-primary {
+  @apply bg-lapoint-red text-white font-bold rounded-lg px-6 py-2 shadow hover:bg-red-600 transition;
+}
+
+.btn-outline {
+  @apply border border-lapoint-red text-lapoint-red font-bold rounded-lg px-6 py-2 bg-white hover:bg-lapoint-yellow transition;
+}
+
+input, select, textarea {
+  @apply border border-lapoint-border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lapoint-red;
+}
+
+.selected-date-text {
+  color: rgb(255, 59, 48) !important;
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+} 
