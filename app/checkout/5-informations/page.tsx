@@ -36,7 +36,7 @@ const empty: CoachForm = {
 };
 
 export default function InformationsStep() {
-  const { summary, setTraveller, discountCode, setDiscountCode, appliedDiscount, setAppliedDiscount } = useStore();
+  const { summary, setTraveller, discountCode, setDiscountCode, appliedDiscount, setAppliedDiscount, setPaymentType } = useStore();
   const router = useRouter();
   const [form, setForm] = useState<CoachForm>(empty);
   const [errors, setErrors] = useState<Partial<Record<keyof CoachForm, string>>>({});
@@ -74,8 +74,10 @@ export default function InformationsStep() {
     form.year && form.month && form.day &&
     form.country && form.phone && form.gender;
 
-  const handleNext = () => {
+  const handleNext = (type: 'deposit' | 'full') => {
     if (!validate()) return;
+    // Save payment type in store
+    setPaymentType(type);
     // Save coach as traveller 0
     setTraveller(0, {
       name: `${form.firstName} ${form.lastName}`.trim(),
@@ -288,11 +290,11 @@ export default function InformationsStep() {
         {/* Payment buttons */}
         <div className="mb-3 sm:mb-4">
           <button className="w-full font-bold text-sm sm:text-base py-2.5 sm:py-3 rounded-xl mb-3 sm:mb-4 flex items-center justify-center gap-2 transition-colors bg-white text-lapoint-red border border-lapoint-red disabled:opacity-50 disabled:cursor-not-allowed"
-            type="button" disabled={!formComplete} onClick={handleNext}>
+            type="button" disabled={!formComplete} onClick={() => handleNext('deposit')}>
             PAYER 20% — EUR {Math.round(summary.total * 0.2)} <span className="text-xl sm:text-2xl">→</span>
           </button>
           <button className="w-full font-bold text-sm sm:text-base py-2.5 sm:py-3 rounded-xl mb-3 sm:mb-4 flex items-center justify-center gap-2 transition-colors bg-lapoint-red text-white disabled:opacity-50 disabled:cursor-not-allowed"
-            type="button" disabled={!formComplete} onClick={handleNext}>
+            type="button" disabled={!formComplete} onClick={() => handleNext('full')}>
             PAYER EN INTÉGRALITÉ EUR {summary.total} <span className="text-xl sm:text-2xl">→</span>
           </button>
           {Object.keys(errors).length > 0 && (

@@ -28,7 +28,10 @@ export default function PaymentStep() {
     addOns,
   } = useStore();
   const router = useRouter();
-  const total = summary?.total || 0;
+  const fullTotal = summary?.total || 0;
+  const amount = (!forceFullPayment && paymentType === 'deposit')
+    ? Math.round(fullTotal * 0.2)
+    : fullTotal;
 
   const handlePayPalSuccess = async (orderId: string) => {
     setProcessing(true);
@@ -89,7 +92,7 @@ export default function PaymentStep() {
           surfLevel: t.surfLevel,
           gender: t.gender,
         })),
-        total: total,
+        total: amount,
         insurance: insurance || false,
         airportTransfer: airportTransfer,
         paymentType: forceFullPayment ? "full" : paymentType || "full",
@@ -144,19 +147,19 @@ export default function PaymentStep() {
             {/* Total */}
             <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-100">
               <span className="text-sm sm:text-base font-medium text-gray-600">Montant total</span>
-              <span className="text-base sm:text-lg font-bold">EUR {total}</span>
+              <span className="text-base sm:text-lg font-bold">EUR {amount}</span>
             </div>
 
             {/* PayPal Buttons */}
             <PayPalButtons
               style={{ layout: "vertical", color: "blue", shape: "rect", label: "paypal" }}
-              forceReRender={[total]}
+              forceReRender={[amount]}
               createOrder={(_data: Record<string, unknown>, actions: any) => {
                 return actions.order.create({
                   purchase_units: [
                     {
                       amount: {
-                        value: total.toString(),
+                        value: amount.toString(),
                         currency_code: "EUR",
                       },
                       description: `Réservation – ${selectedPackage?.name || "Pack"}`,
