@@ -8,10 +8,7 @@ export default function HomePage() {
   const router = useRouter();
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center"
-      style={{ background: "#FFF9E8" }}
-    >
+    <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="flex flex-col items-center text-center px-4 max-w-xl mx-auto">
         {/* Logo */}
         <Image
