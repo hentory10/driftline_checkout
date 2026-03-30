@@ -1,6 +1,6 @@
 # 🏄 DRIFTLINE CHECKOUT — SESSION RESUME FILE
 
-> Last updated: 2026-03-30 ~22:00 (Casablanca time)
+> Last updated: 2026-03-30 ~22:05 (Casablanca time)
 > Read this file when resuming — it contains the full current state of work.
 
 ---
@@ -120,6 +120,7 @@
 - On mobile: only `leftMonth` (1 month) is rendered in both the header and the grid
 - On desktop/tablet (`>= 640px`): both `leftMonth` + `rightMonth` rendered as before
 - Replaces the old CSS-only `hidden sm:block` approach with proper JS-controlled rendering
+- **Calendar cells bumped up on mobile:** `w-9 h-9` buttons, `text-sm` font, `p-3` container padding, `text-xs` day headers — fills the screen width comfortably
 
 ---
 

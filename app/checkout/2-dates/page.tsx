@@ -190,9 +190,9 @@ export default function DateStep() {
                     ? [{ matrix: leftMatrix, month: leftMonth }]
                     : [{ matrix: leftMatrix, month: leftMonth }, { matrix: rightMatrix, month: rightMonth }]
                   ).map(({ matrix, month }, idx) => (
-                    <div key={idx} className="bg-white rounded-lg p-2 sm:p-4 border flex-1 min-w-0">
-                      <div className="grid grid-cols-7 text-center text-gray-400 mb-1 text-[10px] sm:text-sm md:text-base lg:text-lg font-semibold">
-                        {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map((d, i) => <div key={i} className="px-0.5 sm:px-1">{d}</div>)}
+                    <div key={idx} className="bg-white rounded-lg p-3 sm:p-4 border flex-1 min-w-0">
+                      <div className="grid grid-cols-7 text-center text-gray-400 mb-2 text-xs sm:text-sm md:text-base lg:text-lg font-semibold">
+                        {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map((d, i) => <div key={i} className="px-1 sm:px-1">{d}</div>)}
                       </div>
                       {matrix.map((week, wi) => (
                         <div key={wi} className="grid grid-cols-7 text-center">
@@ -214,7 +214,7 @@ export default function DateStep() {
                               <button
                                 key={di}
                                 type="button"
-                                className={`w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full mx-auto my-0.5 sm:my-1 text-[10px] sm:text-sm font-semibold transition-all
+                                className={`w-9 h-9 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full mx-auto my-1 sm:my-1 text-sm sm:text-sm font-semibold transition-all
                                   ${!isCurrentMonth ? 'invisible' : ''}
                                   ${isUnavailable && isCurrentMonth ? 'text-gray-300 cursor-not-allowed' : ''}
                                   ${isUnavailable && isCurrentMonth ? 'line-through' : ''}
