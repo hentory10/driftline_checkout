@@ -1,10 +1,17 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import { useStore } from '../../../store/booking';
 import { useRouter } from 'next/navigation';
 import ErrorSummary from '../../../components/ErrorSummary';
 import BookingSummary from '../../../components/BookingSummary';
+
+// Direct browser-side Supabase client — bypasses Vercel server/CDN caching entirely
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://rzibwjzcuxpnjsgmzjku.supabase.co',
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_TH6k4CH-NiM8hiUdMyEanQ_kG6ySQgC'
+);
 
 const DURATIONS: Record<string, number> = {
   '4d': 4,
@@ -70,12 +77,36 @@ export default function DateStep() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Fetch already-booked dates from the database
+  // Fetch booked dates DIRECTLY from Supabase in the browser — no server/CDN caching
   useEffect(() => {
-    fetch('/api/booked-dates', { cache: 'no-store' })
-      .then(res => res.json())
-      .then(data => setBookedDates(data.bookedDates || []))
-      .catch(() => setBookedDates([]));
+    async function fetchBookedDates() {
+      try {
+        const { data, error } = await supabase
+          .from('Booking')
+          .select('checkinDate, checkoutDate');
+
+        if (error || !data) { setBookedDates([]); return; }
+
+        const dates: string[] = [];
+        data.forEach((row: any) => {
+          if (!row.checkinDate || !row.checkoutDate) return;
+          const checkin = new Date(row.checkinDate.slice(0, 10) + 'T00:00:00');
+          const checkout = new Date(row.checkoutDate.slice(0, 10) + 'T00:00:00');
+          const current = new Date(checkin);
+          while (current <= checkout) {
+            const y = current.getFullYear();
+            const m = String(current.getMonth() + 1).padStart(2, '0');
+            const d = String(current.getDate()).padStart(2, '0');
+            dates.push(`${y}-${m}-${d}`);
+            current.setDate(current.getDate() + 1);
+          }
+        });
+        setBookedDates(dates);
+      } catch {
+        setBookedDates([]);
+      }
+    }
+    fetchBookedDates();
   }, []);
 
   // Clear any stored arrival date that isn't a Saturday (stale from previous Monday-based logic)
