@@ -20,7 +20,7 @@ const nextConfig = {
           headers: [
             {
               key: 'Content-Security-Policy',
-              value: "script-src 'self' 'unsafe-inline' https://www.paypal.com https://www.sandbox.paypal.com https://js.stripe.com; object-src 'none'; base-uri 'self'; connect-src 'self' https://www.paypal.com https://www.sandbox.paypal.com https://api.stripe.com; frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com https://js.stripe.com; img-src 'self' data: blob:;",
+              value: "script-src 'self' 'unsafe-inline' https://www.paypal.com https://www.sandbox.paypal.com https://js.stripe.com; object-src 'none'; base-uri 'self'; connect-src 'self' https://rzibwjzcuxpnjsgmzjku.supabase.co https://www.paypal.com https://www.sandbox.paypal.com https://api.stripe.com; frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com https://js.stripe.com; img-src 'self' data: blob:;",
             },
           ],
         },
