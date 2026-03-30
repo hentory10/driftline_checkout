@@ -1,6 +1,6 @@
 # 🏄 DRIFTLINE CHECKOUT — SESSION RESUME FILE
 
-> Last updated: 2026-03-30 ~21:47 (Casablanca time)
+> Last updated: 2026-03-30 ~22:00 (Casablanca time)
 > Read this file when resuming — it contains the full current state of work.
 
 ---
@@ -112,7 +112,17 @@
 
 ---
 
-## 🗄️ CURRENT DATABASE STATE
+### 10. Mobile Calendar — Show 1 Month Instead of 2 (DONE)
+
+**File:** `app/checkout/2-dates/page.tsx`
+- Added `isMobile` state using `window.innerWidth < 640` (Tailwind's `sm` breakpoint)
+- Resize listener updates `isMobile` dynamically if the window is resized
+- On mobile: only `leftMonth` (1 month) is rendered in both the header and the grid
+- On desktop/tablet (`>= 640px`): both `leftMonth` + `rightMonth` rendered as before
+- Replaces the old CSS-only `hidden sm:block` approach with proper JS-controlled rendering
+
+---
+
 
 **Supabase project:** `driftline_checkout`
 **Project ID:** `rzibwjzcuxpnjsgmzjku`
@@ -150,7 +160,7 @@
 
 | File | What changed |
 |------|-------------|
-| `app/checkout/2-dates/page.tsx` | Saturday-only logic + booked dates + closed season + strikethrough |
+| `app/checkout/2-dates/page.tsx` | Saturday-only logic + booked dates + closed season + strikethrough + **mobile 1-month calendar** |
 | `app/api/availability/route.ts` | Saturday generation fix |
 | `app/api/booked-dates/route.ts` | Booked range inclusive of checkout (`<=`), force-dynamic, no-store |
 | `app/api/booking/route.ts` | payment columns + **production n8n webhook URL** |

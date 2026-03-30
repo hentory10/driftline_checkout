@@ -60,8 +60,15 @@ export default function DateStep() {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [bookedDates, setBookedDates] = useState<string[]>([]); // YYYY-MM-DD strings from DB
+  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => { setIsClient(true); }, []);
+  useEffect(() => {
+    setIsClient(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Fetch already-booked dates from the database
   useEffect(() => {
@@ -159,7 +166,7 @@ export default function DateStep() {
                     </svg>
                   </button>
                   <div className="flex-1 flex justify-center sm:justify-between items-center gap-2 sm:gap-4 md:gap-8 px-2">
-                    {[leftMonth, rightMonth].map((month, idx) => (
+                    {(isMobile ? [leftMonth] : [leftMonth, rightMonth]).map((month, idx) => (
                       <div key={idx} className="flex-1 flex flex-col items-center">
                         <div className="text-center font-bold mb-2 text-sm sm:text-base md:text-xl">
                           {month.toLocaleString('en-US', { month: 'long', year: 'numeric' })}
@@ -177,9 +184,12 @@ export default function DateStep() {
                     </svg>
                   </button>
                 </div>
-                {/* Always side-by-side — fixes the vertical stacking bug */}
+                {/* On mobile: 1 month. On desktop: 2 months side-by-side */}
                 <div className="flex flex-row gap-2 sm:gap-4 lg:gap-6 xl:gap-8 w-full">
-                  {[{ matrix: leftMatrix, month: leftMonth }, { matrix: rightMatrix, month: rightMonth }].map(({ matrix, month }, idx) => (
+                  {(isMobile
+                    ? [{ matrix: leftMatrix, month: leftMonth }]
+                    : [{ matrix: leftMatrix, month: leftMonth }, { matrix: rightMatrix, month: rightMonth }]
+                  ).map(({ matrix, month }, idx) => (
                     <div key={idx} className="bg-white rounded-lg p-2 sm:p-4 border flex-1 min-w-0">
                       <div className="grid grid-cols-7 text-center text-gray-400 mb-1 text-[10px] sm:text-sm md:text-base lg:text-lg font-semibold">
                         {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map((d, i) => <div key={i} className="px-0.5 sm:px-1">{d}</div>)}
