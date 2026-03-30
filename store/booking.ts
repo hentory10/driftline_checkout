@@ -68,7 +68,7 @@ export const useStore = create<State>((set, get) => ({
     {
       id: '3',
       name: 'PACK COACH YOGA',
-      price: 495,
+      price: 1, // TEST MODE — original: 495
       levels: ['beginner', 'intermediate', 'advanced'],
       includedItems: [
         '6 nuits d\'hébergement',
@@ -83,14 +83,14 @@ export const useStore = create<State>((set, get) => ({
     },
   ],
   rooms: [
-    { id: '1', name: 'Tamazirt room - Oubaha', description: 'Tamazirt room - Oubaha', price: 140, capacity: 2, img: '/images/room1.jpg' },
+    { id: '1', name: 'Tamazirt room - Oubaha', description: 'Tamazirt room - Oubaha', price: 0, capacity: 2, img: '/images/room1.jpg' }, // TEST: orig 140
     { id: '2', name: 'Triple room - Oubaha', description: 'Triple room - Oubaha', price: 0, capacity: 2, img: '/images/room2.jpg' },
     { id: '3', name: 'Double room - Oubaha', description: 'Double room - Oubaha', price: 0, capacity: 2, img: '/images/room3.jpg' },
     { id: '4', name: 'Twin room - Oubaha', description: 'Twin room - Oubaha', price: 0, capacity: 2, img: '/images/room4.jpg' },
     { id: '6', name: 'Ayour room - Bigdi', description: 'Ayour room - Bigdi', price: 0, capacity: 2, img: '/images/ayourroom.webp' },
-    { id: '7', name: 'Tafokt room - Bigdi', description: 'Tafokt room - Bigdi', price: 70, capacity: 2, img: '/images/room1.jpg' },
-    { id: '9', name: 'Akal room - Bigdi', description: 'Akal room - Bigdi', price: 140, capacity: 2, img: '/images/room1.jpg' },
-    { id: '10', name: 'Amlal room - Bigdi', description: 'Amlal room - Bigdi', price: 140, capacity: 2, img: '/images/room1.jpg' },
+    { id: '7', name: 'Tafokt room - Bigdi', description: 'Tafokt room - Bigdi', price: 0, capacity: 2, img: '/images/room1.jpg' }, // TEST: orig 70
+    { id: '9', name: 'Akal room - Bigdi', description: 'Akal room - Bigdi', price: 0, capacity: 2, img: '/images/room1.jpg' }, // TEST: orig 140
+    { id: '10', name: 'Amlal room - Bigdi', description: 'Amlal room - Bigdi', price: 0, capacity: 2, img: '/images/room1.jpg' }, // TEST: orig 140
   ],
   addOns: [
     { id: '1', name: 'Transfer 1 person 1 way from DPS airport', price: 22, type: 'per-person', img: '/images/IM.jpg', description: 'Transfer from DPS airport to camp. Price per person. View more.' },

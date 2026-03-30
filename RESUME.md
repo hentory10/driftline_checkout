@@ -1,7 +1,19 @@
 # 🏄 DRIFTLINE CHECKOUT — SESSION RESUME FILE
 
-> Last updated: 2026-03-30 ~22:14 (Casablanca time)
+> Last updated: 2026-03-30 ~22:30 (Casablanca time)
 > Read this file when resuming — it contains the full current state of work.
+
+---
+
+## 🚨 TEST MODE ACTIVE — PRICES SET TO 1€
+
+**File:** `store/booking.ts`
+- Package `PACK COACH YOGA`: ~~495~~ → **1** (test)
+- All room prices set to **0** (test)
+- ~~Add-ons~~ not changed (avoid them during test or they'll add to total)
+- **To restore:** search `// TEST` in `store/booking.ts` and revert each line
+
+> ⚠️ **REVERT BEFORE GOING LIVE** — real price is 495€/person
 
 ---
 
