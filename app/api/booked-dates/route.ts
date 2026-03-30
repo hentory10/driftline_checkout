@@ -49,7 +49,14 @@ export async function GET() {
     });
 
     return NextResponse.json({ bookedDates }, {
-      headers: { 'Cache-Control': 'no-store' },
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'CDN-Cache-Control': 'no-store',
+        'Vercel-CDN-Cache-Control': 'no-store',
+        'Surrogate-Control': 'no-store',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
     });
   } catch (error) {
     console.error('Error fetching booked dates:', error);
