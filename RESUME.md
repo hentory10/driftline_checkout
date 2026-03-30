@@ -1,6 +1,6 @@
 # 🏄 DRIFTLINE CHECKOUT — SESSION RESUME FILE
 
-> Last updated: 2026-03-30 ~22:05 (Casablanca time)
+> Last updated: 2026-03-30 ~22:14 (Casablanca time)
 > Read this file when resuming — it contains the full current state of work.
 
 ---
@@ -177,6 +177,24 @@
 1. **Test a new booking end-to-end** — Sep 12 → verify Sep 18 in DB, thank-you page, and n8n fires
 2. **Optional cleanup** — Delete test bookings `0001` / `0002` from Supabase
 3. ✅ **Deployed** to Vercel via GitHub push
+
+---
+
+## 🌐 VERCEL ENVIRONMENT VARIABLES
+
+### ✅ Already Added on Vercel
+| Variable | Notes |
+|---|---|
+| `NEXT_PUBLIC_PAYPAL_CLIENT_ID` | Set — confirm it's the **Live** Client ID from developer.paypal.com, not Sandbox |
+| `DATABASE_URL` | Set — PostgreSQL Supabase direct connection |
+
+### ⚠️ Still Need to Add on Vercel
+| Variable | Value |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://rzibwjzcuxpnjsgmzjku.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `sb_publishable_TH6k4CH-NiM8hiUdMyEanQ_kG6ySQgC` |
+
+> Without SUPABASE vars on Vercel: bookings won't save to DB after payment and the confirmation page will break.
 
 ---
 
