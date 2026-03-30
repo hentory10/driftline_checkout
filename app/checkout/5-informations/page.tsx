@@ -90,8 +90,9 @@ export default function InformationsStep() {
       country: form.country,
       mobile: form.phone,
       phone: form.phone,
-      surfLevel: '',
       gender: form.gender,
+      studioName: form.studioName,
+      notes: form.notes,
     });
     router.push('/checkout/6-payment');
   };
@@ -277,15 +278,19 @@ export default function InformationsStep() {
           </div>
         </div>
 
-        {/* Checkboxes */}
-        <div className="flex items-start gap-2 mb-2 mt-3 sm:mt-4">
-          <input type="checkbox" className="form-checkbox h-4 w-4 sm:h-5 sm:w-5 mt-1 flex-shrink-0" />
-          <span className="text-xs sm:text-sm">J'accepte par la présente les <a href="#" className="underline text-lapoint-red">conditions générales</a> et la <a href="#" className="underline text-lapoint-red">politique de confidentialité</a> de Driftline.</span>
-        </div>
-        <div className="flex items-start gap-2 mb-3 sm:mb-4">
-          <input type="checkbox" className="form-checkbox h-4 w-4 sm:h-5 sm:w-5 mt-1 flex-shrink-0" />
-          <span className="text-xs sm:text-sm">Je souhaite rejoindre la communauté de membres <a href="#" className="underline text-lapoint-red">Driftline</a> (c'est gratuit !) et recevoir des réductions et avantages exclusifs par e-mail. Vous pouvez vous désinscrire à tout moment.</span>
-        </div>
+        {/* Checkboxes — hidden for now */}
+        {false && (
+          <>
+            <div className="flex items-start gap-2 mb-2 mt-3 sm:mt-4">
+              <input type="checkbox" className="form-checkbox h-4 w-4 sm:h-5 sm:w-5 mt-1 flex-shrink-0" />
+              <span className="text-xs sm:text-sm">J'accepte par la présente les <a href="#" className="underline text-lapoint-red">conditions générales</a> et la <a href="#" className="underline text-lapoint-red">politique de confidentialité</a> de Driftline.</span>
+            </div>
+            <div className="flex items-start gap-2 mb-3 sm:mb-4">
+              <input type="checkbox" className="form-checkbox h-4 w-4 sm:h-5 sm:w-5 mt-1 flex-shrink-0" />
+              <span className="text-xs sm:text-sm">Je souhaite rejoindre la communauté de membres <a href="#" className="underline text-lapoint-red">Driftline</a> (c'est gratuit !) et recevoir des réductions et avantages exclusifs par e-mail. Vous pouvez vous désinscrire à tout moment.</span>
+            </div>
+          </>
+        )}
 
         {/* Payment buttons */}
         <div className="mb-3 sm:mb-4">

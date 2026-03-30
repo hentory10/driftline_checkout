@@ -16,6 +16,8 @@ type Traveller = {
   phone?: string;
   surfLevel?: string;
   gender?: string;
+  studioName?: string;
+  notes?: string;
 };
 
 type State = {
@@ -199,32 +201,30 @@ useStore.subscribe((state) => {
   }
   
   let total = subtotalWithInsurance - discount;
-  // if (state.paymentType === 'deposit' && !state.forceFullPayment) {
-  //   total = Math.round(total * 0.25);
-  // }
-  // Force full payment if arrivalDate <= 35 days from today
+
+  // Only mark forceFullPayment as info (used to show a warning note in UI)
+  // but NEVER override the user's chosen paymentType
   let forceFull = false;
   if (state.arrivalDate) {
     const arrival = new Date(state.arrivalDate);
     const now = new Date();
     const diff = (arrival.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
-    if (diff <= 35) forceFull = true;
+    if (diff <= 3) forceFull = true; // only truly last-minute (3 days or less)
   }
 
   // Only update if values have changed
-  const { summary, forceFullPayment, paymentType } = state;
+  const { summary, forceFullPayment } = state;
   if (
     summary.subtotal !== subtotal ||
     summary.insurance !== insurance ||
     summary.discount !== discount ||
     summary.total !== total ||
-    forceFullPayment !== forceFull ||
-    paymentType !== (forceFull ? 'full' : state.paymentType)
+    forceFullPayment !== forceFull
   ) {
     useStore.setState({
       summary: { subtotal, insurance, discount, total },
       forceFullPayment: forceFull,
-      paymentType: forceFull ? 'full' : state.paymentType,
+      // Never override paymentType — user's choice (deposit or full) is always respected
     });
   }
 }); 

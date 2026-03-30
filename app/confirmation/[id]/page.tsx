@@ -1,67 +1,33 @@
 import React from 'react';
+import { unstable_noStore as noStore } from 'next/cache';
 import { content } from '../../../content';
-import { prisma } from '../../../prisma/client';
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase client as fallback
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://uakihwftirtauozffiuq.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVha2lod2Z0aXJ0YXVvemZmaXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIzMTY1MjcsImV4cCI6MjA3Nzg5MjUyN30.F1lp2w00L0G1F7X7vRnPWerY2LBnmatoDIp-ApeM8oY';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Prevent Next.js from statically generating this page
+export const dynamic = 'force-dynamic';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://rzibwjzcuxpnjsgmzjku.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_TH6k4CH-NiM8hiUdMyEanQ_kG6ySQgC';
 
 export default async function ConfirmationPage({ params }: { params: { id: string } }) {
-  let booking: any = null;
+  // Opt out of Next.js Data Cache — forces a real network call to Supabase every time
+  noStore();
 
-  // Try Prisma first, fallback to Supabase REST API
-  try {
-    booking = await prisma.booking.findUnique({
-      where: { id: params.id },
-      include: { travellers: true, package: true, room: true },
-    });
-  } catch (prismaError) {
-    console.error('Prisma connection failed, using Supabase REST API fallback:', prismaError);
-    
-    // Fallback: Use Supabase REST API
-    // Fetch booking
-    const { data: bookingData, error: bookingError } = await supabase
-      .from('Booking')
-      .select('*')
-      .eq('id', params.id)
-      .single();
+  // Create the client INSIDE the function so Next.js cannot cache its fetch calls at module level
+  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    global: {
+      fetch: (url: RequestInfo | URL, init?: RequestInit) =>
+        fetch(url, { ...init, cache: 'no-store' }),
+    },
+  });
 
-    if (bookingError || !bookingData) {
-      return (
-        <main className="min-h-screen flex flex-col items-center justify-center">
-          <h1 className="text-2xl font-bold mb-4">{content.confirmation.notFoundTitle}</h1>
-          <p>{content.confirmation.notFoundMessage}</p>
-        </main>
-      );
-    }
+  const { data: booking, error } = await supabase
+    .from('Booking')
+    .select('*, coach:YogaCoach(*)')
+    .eq('id', params.id)
+    .single();
 
-    // Fetch related data separately
-    const [packageData, roomData, travellersData] = await Promise.all([
-      supabase.from('Package').select('*').eq('id', bookingData.packageId).single(),
-      supabase.from('Room').select('*').eq('id', bookingData.roomId).single(),
-      supabase.from('Traveller').select('*').eq('bookingId', bookingData.id),
-    ]);
-
-    // Transform Supabase data to match Prisma format
-    booking = {
-      id: bookingData.id,
-      packageId: bookingData.packageId,
-      roomId: bookingData.roomId,
-      arrivalDate: new Date(bookingData.arrivalDate),
-      people: bookingData.people,
-      insurance: bookingData.insurance,
-      paymentType: bookingData.paymentType,
-      total: bookingData.total,
-      createdAt: bookingData.createdAt ? new Date(bookingData.createdAt) : new Date(),
-      package: packageData.data || null,
-      room: roomData.data || null,
-      travellers: travellersData.data || [],
-    };
-  }
-
-  if (!booking) {
+  if (error || !booking) {
     return (
       <main className="min-h-screen flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold mb-4">{content.confirmation.notFoundTitle}</h1>
@@ -70,19 +36,71 @@ export default async function ConfirmationPage({ params }: { params: { id: strin
     );
   }
 
+  const isDeposit = booking.paymentType === 'deposit';
+  // Use stored payment_amount / remaining_amount from DB; fall back to calculation if missing
+  const depositAmount   = booking.payment_amount   ?? (isDeposit ? Math.round(booking.total * 0.2) : booking.total);
+  const remainingAmount = booking.remaining_amount ?? (isDeposit ? booking.total - Math.round(booking.total * 0.2) : 0);
+
+  // Extract date from ISO string directly to avoid UTC→local timezone shift
+  const formatDate = (iso: string | null) => {
+    if (!iso) return '—';
+    const [y, m, d] = iso.substring(0, 10).split('-');
+    return `${d}/${m}/${y}`; // DD/MM/YYYY
+  };
+  const checkin = formatDate(booking.checkinDate);
+  const checkout = formatDate(booking.checkoutDate);
+
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-4">
       <h1 className="text-3xl font-bold mb-2">{content.confirmation.title}</h1>
       <p className="mb-6">{content.confirmation.description}</p>
+
       <div className="bg-white rounded shadow p-6 w-full max-w-lg">
-        <div className="mb-2 font-semibold">{content.confirmation.bookingIdLabel}: <span className="font-mono">{booking.id}</span></div>
-        <div className="mb-2">{content.confirmation.packageLabel}: {booking.package?.name || 'N/A'}</div>
-        <div className="mb-2">{content.confirmation.roomLabel}: {booking.room?.name || 'N/A'}</div>
-        <div className="mb-2">{content.confirmation.arrivalLabel}: {booking.arrivalDate.toLocaleDateString()}</div>
-        <div className="mb-2">{content.confirmation.travellersLabel}: {booking.travellers?.length > 0 ? booking.travellers.map((t: { name: string }) => t.name).join(', ') : 'None'}</div>
-        <div className="mb-2">{content.confirmation.totalLabel}: {booking.total} €</div>
+        {/* Booking details */}
+        <div className="mb-2 font-semibold">
+          {content.confirmation.bookingIdLabel}: <span className="font-mono">{booking.id}</span>
+        </div>
+        <div className="mb-2">Package : {booking.packageName || 'N/A'}</div>
+        <div className="mb-2">Arrivée : {checkin}</div>
+        <div className="mb-2">Départ : {checkout}</div>
+        <div className="mb-2">Durée : {booking.duration || '—'}</div>
+        <div className="mb-2">Nombre de personnes : {booking.numberOfPeople}</div>
+
+        {/* Coach details */}
+        {booking.yogaCoachName && (
+          <div className="mb-2">Coach Yoga : {booking.yogaCoachName}</div>
+        )}
+        {booking.yogaStudio && (
+          <div className="mb-2">Studio : {booking.yogaStudio}</div>
+        )}
+
+        <hr className="my-4 border-gray-200" />
+
+        {/* Payment breakdown */}
+        {isDeposit ? (
+          <>
+            <div className="mb-2 flex justify-between">
+              <span className="text-gray-600">Total de la réservation</span>
+              <span className="font-semibold">{booking.total} {booking.currency}</span>
+            </div>
+            <div className="mb-2 flex justify-between text-green-700">
+              <span className="font-semibold">✅ Acompte payé (20%)</span>
+              <span className="font-bold">{depositAmount} {booking.currency}</span>
+            </div>
+            <div className="mb-2 flex justify-between text-orange-600">
+              <span className="font-semibold">⏳ Solde restant à payer</span>
+              <span className="font-bold">{remainingAmount} {booking.currency}</span>
+            </div>
+          </>
+        ) : (
+          <div className="mb-2 flex justify-between">
+            <span className="font-semibold">✅ {content.confirmation.totalLabel}</span>
+            <span className="font-bold">{booking.total} {booking.currency}</span>
+          </div>
+        )}
       </div>
+
       <div className="mt-8 text-center text-gray-500">{content.confirmation.footer}</div>
     </main>
   );
-} 
+}

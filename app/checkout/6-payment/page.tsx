@@ -48,9 +48,16 @@ export default function PaymentStep() {
         "4d": 4, "1w": 7, "2w": 14, "3w": 21, "4w": 28,
       };
       const days = DURATIONS[duration] || 7;
-      const arrival = new Date(arrivalDate || new Date().toISOString());
+      // Parse arrival date in LOCAL timezone (not UTC) to avoid date shifting
+      const [ayear, amonth, aday] = (arrivalDate || '').split('-').map(Number);
+      const arrival = arrivalDate
+        ? new Date(ayear, amonth - 1, aday)
+        : new Date();
       const checkout = new Date(arrival);
-      checkout.setDate(checkout.getDate() + days);
+      // Use days - 1 to match calendar display (check-in = day 1, so 7-day stay ends on day 7)
+      checkout.setDate(checkout.getDate() + (days - 1));
+      // Format as YYYY-MM-DD local date string (not UTC ISO string)
+      const checkoutStr = `${checkout.getFullYear()}-${String(checkout.getMonth() + 1).padStart(2, '0')}-${String(checkout.getDate()).padStart(2, '0')}`;
 
       const airportTransfer = selectedAddOns.includes("1");
       const primaryGuest = travellers && travellers.length > 0 ? travellers[0] : null;
@@ -71,32 +78,27 @@ export default function PaymentStep() {
       }
 
       const bookingData = {
-        packageId: selectedPackage?.id || "1",
-        packageName: selectedPackage?.name || "",
-        roomId: selectedRoom?.id || "1",
-        roomName: selectedRoom?.name || "",
-        arrivalDate: arrivalDate || new Date().toISOString(),
-        checkoutDate: checkout.toISOString(),
+        packageName: selectedPackage?.name || '',
+        arrivalDate: arrivalDate || '',
+        checkoutDate: checkoutStr,
+        duration: duration,
         people: people || 1,
         travellers: (travellers || []).map((t: any) => ({
-          name: t.name || `${t.firstName || ""} ${t.lastName || ""}`.trim() || "Guest",
-          firstName: t.firstName,
-          lastName: t.lastName,
-          email: t.email,
-          year: t.year,
-          month: t.month,
-          day: t.day,
-          country: t.country,
-          phone: t.phone || t.mobile,
-          mobile: t.mobile || t.phone,
-          surfLevel: t.surfLevel,
-          gender: t.gender,
+          firstName:  t.firstName,
+          lastName:   t.lastName,
+          email:      t.email,
+          year:       t.year,
+          month:      t.month,
+          day:        t.day,
+          country:    t.country,
+          phone:      t.phone || t.mobile,
+          mobile:     t.mobile || t.phone,
+          gender:     t.gender,
+          studioName: t.studioName,
+          notes:      t.notes,
         })),
-        total: amount,
-        insurance: insurance || false,
-        airportTransfer: airportTransfer,
-        paymentType: forceFullPayment ? "full" : paymentType || "full",
-        addOns: selectedAddOns.map((addOnId) => ({ addOnId })),
+        total: fullTotal,  // Always store the FULL booking total; deposit = total × 0.2
+        paymentType: forceFullPayment ? 'full' : paymentType || 'full',
       };
 
       const response = await fetch("/api/booking", {
@@ -133,6 +135,7 @@ export default function PaymentStep() {
         clientId: paypalClientId,
         currency: "EUR",
         intent: "capture",
+        // "sb" client ID automatically uses PayPal sandbox environment
       }}
     >
       <div className="min-h-screen bg-[#FFF9E8]">

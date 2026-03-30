@@ -48,7 +48,7 @@ export default function ProgressBar() {
         </div>
       </div>
       <div className="w-full max-w-7xl mx-auto bg-yellow-300 text-lapoint-dark text-center font-bold py-2 text-xs sm:text-base border-t border-yellow-200 px-2 sm:px-4">
-        Annulation avec remboursement gratuit jusqu'à 30 jours avant votre arrivée.
+        Annulation avec remboursement gratuit jusqu'à 60 jours avant votre arrivée.
       </div>
     </div>
   );

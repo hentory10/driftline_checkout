@@ -59,7 +59,17 @@ export default function DateStep() {
   const [error, setError] = useState('');
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
+  const [bookedDates, setBookedDates] = useState<string[]>([]); // YYYY-MM-DD strings from DB
+
   useEffect(() => { setIsClient(true); }, []);
+
+  // Fetch already-booked dates from the database
+  useEffect(() => {
+    fetch('/api/booked-dates', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => setBookedDates(data.bookedDates || []))
+      .catch(() => setBookedDates([]));
+  }, []);
 
   // Clear any stored arrival date that isn't a Saturday (stale from previous Monday-based logic)
   useEffect(() => {
@@ -91,6 +101,14 @@ export default function DateStep() {
 
   // Calendar state
   const today = new Date();
+  today.setHours(0, 0, 0, 0); // normalize to midnight
+
+  // Option B: next upcoming Saturday (skip today even if today IS Saturday)
+  const dayOfWeek = today.getDay(); // 0=Sun ... 6=Sat
+  const daysUntilNextSat = dayOfWeek === 6 ? 7 : (6 - dayOfWeek);
+  const firstAvailableSaturday = new Date(today);
+  firstAvailableSaturday.setDate(today.getDate() + daysUntilNextSat);
+
   const [monthOffset, setMonthOffset] = useState(0);
   const leftMonth = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
   const rightMonth = new Date(today.getFullYear(), today.getMonth() + monthOffset + 1, 1);
@@ -171,6 +189,14 @@ export default function DateStep() {
                           {week.map((day, di) => {
                             const isCurrentMonth = day.getMonth() === month.getMonth();
                             const isSaturday = day.getDay() === 6;
+                            const isPastDay = day < firstAvailableSaturday;
+                            const dayStr = formatLocalDate(day);
+                            const isBooked = bookedDates.includes(dayStr);
+                            // Block April (3) through August (7) 2026 as closed season
+                            const isBlockedSeason = day.getFullYear() === 2026 && day.getMonth() >= 3 && day.getMonth() <= 7;
+                            const isUnavailable = isPastDay || isBooked || isBlockedSeason;
+                            const isDisabled = !isCurrentMonth || !isSaturday || isUnavailable;
+                            const isAvailableSaturday = isSaturday && !isUnavailable;
                             const isSelected = checkIn && isSameDay(day, checkIn) && isSaturday;
                             const isCheckOut = checkOut && isSameDay(day, checkOut) && isSaturday;
                             const isInSelectedRange = checkIn && checkOut && day >= checkIn && day <= checkOut;
@@ -180,12 +206,14 @@ export default function DateStep() {
                                 type="button"
                                 className={`w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full mx-auto my-0.5 sm:my-1 text-[10px] sm:text-sm font-semibold transition-all
                                   ${!isCurrentMonth ? 'invisible' : ''}
+                                  ${isUnavailable && isCurrentMonth ? 'text-gray-300 cursor-not-allowed' : ''}
+                                  ${isUnavailable && isCurrentMonth ? 'line-through' : ''}
                                   ${isInSelectedRange ? 'bg-lapoint-yellow text-lapoint-dark' : ''}
                                   ${isSelected ? 'bg-lapoint-red !border-lapoint-red !border-2 selected-date-text text-white' : ''}
                                   ${isCheckOut ? 'border-2 border-lapoint-red' : ''}
-                                  ${isSaturday && isCurrentMonth ? 'border border-lapoint-red' : ''}
+                                  ${isAvailableSaturday && isCurrentMonth ? 'border border-lapoint-red' : ''}
                                 `}
-                                disabled={!isCurrentMonth || !isSaturday}
+                                disabled={isDisabled}
                                 onClick={() => handleSelect(day)}
                                 aria-label={day.toLocaleDateString('en-GB', { timeZone: TIMEZONE })}
                               >
