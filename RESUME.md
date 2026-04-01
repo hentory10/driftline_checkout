@@ -1,7 +1,91 @@
 # 🏄 DRIFTLINE CHECKOUT — SESSION RESUME FILE
 
-> Last updated: 2026-03-30 ~22:54 (Casablanca time)
+> Last updated: 2026-04-01 ~22:49 (Casablanca time)
 > Read this file when resuming — it contains the full current state of work.
+
+---
+
+## ✅ SESSION 2026-04-01 — WHAT WAS DONE
+
+### 11. Page 4 — Add-Ons Step Now Visible & Fully Reworked (DONE)
+
+**Files:** `app/checkout/4-add-ons/page.tsx`, `store/booking.ts`, `components/ProgressBar.tsx`, `app/checkout/2-dates/page.tsx`
+
+- Step 4 is no longer hidden — it is now a fully active step in the checkout flow
+- Route: `2-dates` → `4-add-ons` → `5-informations`
+- ProgressBar updated to show step 4
+
+**Add-on content (3 items):**
+| ID | Name | Price | Image |
+|----|------|-------|-------|
+| 1 | Transfer Marrakech Airport → Agadir (Aller) | 225 EUR / véhicule | `/images/transfer.webp` |
+| 2 | Transfer Agadir → Marrakech Airport (Retour) | 225 EUR / véhicule | `/images/transfer.webp` |
+| 3 | Transfer Agadir Airport ↔ Driftline (Aller-Retour) | 0 EUR — Gratuit | `/images/transfer.webp` |
+
+**Price display:** `225 EUR / véhicule` with `(25 EUR / pers.)` shown in gray beside it
+
+**Button behavior:**
+- Unselected → gray border for ALL buttons (including the free one)
+- Selected → green (`border-green-500 text-green-700 bg-green-50`) with `✓ Ajouté`
+- "INFORMATIONS →" button is **disabled** until at least one add-on is selected
+
+**UI cleanup:**
+- Removed "Number of people" header from the add-ons page
+- Image changed from `IM.jpg` → `transfer.webp`
+
+---
+
+### 12. BookingSummary — "Options choisies" Now Visible (DONE)
+
+**File:** `components/BookingSummary.tsx`
+
+- `{false && (...)}` wrapper removed — section now renders
+- Shows selected add-on names in the recap
+- If nothing selected: displays `"Aucune option sélectionnée"` in gray
+
+---
+
+### 13. Database — `transfer_options` Column Added to Booking Table (DONE)
+
+**Supabase migration applied** — new column added to `public.Booking`:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `transfer_options` | `text` | Comma-separated slugs of selected transfers, or `null` |
+
+**Examples of stored values:**
+- `"marrakech_to_agadir"`
+- `"agadir_to_marrakech"`
+- `"marrakech_to_agadir, agadir_airport_to_driftline"`
+- `null` (no transfer selected)
+
+---
+
+### 14. Backend — Transfer Options Saved on Payment (DONE)
+
+**File:** `app/checkout/6-payment/page.tsx`
+- Maps selected add-on IDs → slugs:
+  - `'1'` → `marrakech_to_agadir`
+  - `'2'` → `agadir_to_marrakech`
+  - `'3'` → `agadir_airport_to_driftline`
+- Joins with `", "` → sends as `transfer_options` in the booking API payload
+
+**File:** `app/api/booking/route.ts`
+- Reads `transfer_options` from request body
+- Saves it to `Booking.transfer_options` in Supabase
+- Includes it in the n8n webhook payload
+
+---
+
+### 15. Confirmation Page — Transfer Options Displayed (DONE)
+
+**File:** `app/confirmation/[id]/page.tsx`
+- Reads `booking.transfer_options` from Supabase
+- Shows nothing if `null`
+- Converts slugs back to human-readable labels joined with ` + `
+- Example: `Transferts : Transfer Marrakech Airport → Agadir (Aller) + Transfer Agadir Airport ↔ Driftline (Gratuit)`
+
+---
 
 ---
 

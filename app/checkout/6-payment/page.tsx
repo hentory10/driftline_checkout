@@ -77,6 +77,16 @@ export default function PaymentStep() {
         }
       }
 
+      // Build transfer_options string from selected add-ons
+      const ADD_ON_SLUGS: Record<string, string> = {
+        '1': 'marrakech_to_agadir',
+        '2': 'agadir_to_marrakech',
+        '3': 'agadir_airport_to_driftline',
+      };
+      const transferOptions = selectedAddOns.length > 0
+        ? selectedAddOns.map(id => ADD_ON_SLUGS[id]).filter(Boolean).join(', ')
+        : null;
+
       const bookingData = {
         packageName: selectedPackage?.name || '',
         arrivalDate: arrivalDate || '',
@@ -99,6 +109,7 @@ export default function PaymentStep() {
         })),
         total: fullTotal,  // Always store the FULL booking total; deposit = total × 0.2
         paymentType: forceFullPayment ? 'full' : paymentType || 'full',
+        transfer_options: transferOptions,
       };
 
       const response = await fetch("/api/booking", {

@@ -7,7 +7,7 @@ const steps = [
   { path: '/checkout/1-package', label: 'Package' },
   { path: '/checkout/2-dates', label: 'Date' },
   // { path: '/checkout/3-room', label: 'Chambre' },        // hidden
-  // { path: '/checkout/4-add-ons', label: 'Options supplémentaires' }, // hidden
+  { path: '/checkout/4-add-ons', label: 'Options' },
   { path: '/checkout/5-informations', label: 'Informations' },
   { path: '/checkout/6-payment', label: 'Réserver et payer' },
 ];

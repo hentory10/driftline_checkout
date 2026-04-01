@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
       paymentType,
       payment_amount: rawPaymentAmount,
       remaining_amount: rawRemainingAmount,
+      transfer_options,
     } = data;
 
     // Calculate payment_amount / remaining_amount server-side if not provided by client
@@ -112,6 +113,7 @@ export async function POST(req: NextRequest) {
         remaining_amount: remainingAmount,
         currency:         'EUR',
         bookingStatus:    'confirmed',
+        transfer_options: transfer_options || null,
       });
 
     if (bookingError) {
@@ -137,6 +139,7 @@ export async function POST(req: NextRequest) {
           payment_amount:   paymentAmount,
           remaining_amount: remainingAmount,
           bookingStatus:    'confirmed',
+          transfer_options: transfer_options || null,
           coach: {
             firstName:  coach.firstName  || null,
             lastName:   coach.lastName   || null,

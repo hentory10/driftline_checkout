@@ -66,6 +66,23 @@ export default async function ConfirmationPage({ params }: { params: { id: strin
         <div className="mb-2">Durée : {booking.duration || '—'}</div>
         <div className="mb-2">Nombre de personnes : {booking.numberOfPeople}</div>
 
+        {/* Transfer options */}
+        {booking.transfer_options && (
+          <div className="mb-2">
+            Transferts : {booking.transfer_options
+              .split(', ')
+              .map((slug: string) => {
+                const labels: Record<string, string> = {
+                  marrakech_to_agadir: 'Transfer Marrakech Airport → Agadir (Aller)',
+                  agadir_to_marrakech: 'Transfer Agadir → Marrakech Airport (Retour)',
+                  agadir_airport_to_driftline: 'Transfer Agadir Airport ↔ Driftline (Gratuit)',
+                };
+                return labels[slug] || slug;
+              })
+              .join(' + ')}
+          </div>
+        )}
+
         {/* Coach details */}
         {booking.yogaCoachName && (
           <div className="mb-2">Coach Yoga : {booking.yogaCoachName}</div>

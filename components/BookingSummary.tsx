@@ -98,8 +98,7 @@ export default function BookingSummary({ buttonLabel = 'ROOM SELECTION →', onB
         </div>
         )}
         <hr className="my-2" />
-        {/* Options choisies section hidden */}
-        {false && (
+        {/* Options choisies section */}
         <div>
           <div className="font-semibold text-sm sm:text-base mb-1">Options choisies</div>
           {selectedAddOns.length > 0 ? (
@@ -111,13 +110,13 @@ export default function BookingSummary({ buttonLabel = 'ROOM SELECTION →', onB
                   const count = addOnCounts[id] || 0;
                   if (count === 0) return null;
                   return (
-                    <div key={id}>
+                    <div key={id} className="text-sm sm:text-base">
                       <span>{count} x {addOn.name}</span>
                     </div>
                   );
                 } else if (addOn.type === 'per-booking') {
                   return (
-                    <div key={id}>
+                    <div key={id} className="text-sm sm:text-base">
                       <span>{addOn.name}</span>
                     </div>
                   );
@@ -126,10 +125,9 @@ export default function BookingSummary({ buttonLabel = 'ROOM SELECTION →', onB
               })}
             </div>
           ) : (
-            <span>-</span>
+            <span className="text-sm sm:text-base text-gray-400">Aucune option sélectionnée</span>
           )}
         </div>
-        )}
       </div>
       {/* Hide total and button on step 5 (travellers page) */}
       {!pathname.includes('/checkout/5-informations') && (

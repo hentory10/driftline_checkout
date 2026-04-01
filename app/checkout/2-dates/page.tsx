@@ -165,7 +165,7 @@ export default function DateStep() {
       setError('Please select a start date.');
       return;
     }
-    router.push('/checkout/5-informations');
+    router.push('/checkout/4-add-ons');
   };
 
   const TIMEZONE = 'Africa/Casablanca';
