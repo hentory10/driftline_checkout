@@ -71,7 +71,7 @@ export const useStore = create<State>((set, get) => ({
       price: 495,
       levels: ['beginner', 'intermediate', 'advanced'],
       includedItems: [
-        '6 nuits d\'hébergement',
+        '7 nuits d\'hébergement',
         '7 petits-déjeuners, 6 déjeuners et 6 dîners',
         'Rooftop vue océan dédié au yoga',
         'Sessions de yoga selon votre programme',

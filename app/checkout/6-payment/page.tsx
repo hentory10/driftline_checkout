@@ -54,8 +54,8 @@ export default function PaymentStep() {
         ? new Date(ayear, amonth - 1, aday)
         : new Date();
       const checkout = new Date(arrival);
-      // Use days - 1 to match calendar display (check-in = day 1, so 7-day stay ends on day 7)
-      checkout.setDate(checkout.getDate() + (days - 1));
+      // Friday → Friday: add exactly 'days' (7) so checkout lands on next Friday (7 nights)
+      checkout.setDate(checkout.getDate() + days);
       // Format as YYYY-MM-DD local date string (not UTC ISO string)
       const checkoutStr = `${checkout.getFullYear()}-${String(checkout.getMonth() + 1).padStart(2, '0')}-${String(checkout.getDate()).padStart(2, '0')}`;
 

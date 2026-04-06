@@ -5,7 +5,45 @@
 
 ---
 
+## ✅ SESSION 2026-04-06 — WHAT WAS DONE
+
+### 16. Calendar — Switched from Saturday-Only to Friday-to-Friday Booking (DONE)
+
+**Files:** `app/checkout/2-dates/page.tsx`, `app/checkout/6-payment/page.tsx`
+
+**Change:** Check-in and checkout are now both **Fridays** (7 nights, Fri → Fri).
+
+**Details:**
+- `firstAvailableSaturday` → `firstAvailableFriday` (uses `day === 5`, skips today if today is Friday)
+- `handleSelect` guard: only allows `day.getDay() === 5` (Friday)
+- Stale-date cleanup: clears stored date if it is not a Friday (`!== 5`)
+- Calendar cell logic: `isSaturday → isFriday`, `isAvailableSaturday → isAvailableFriday`
+- Checkout date: changed from `arrival + (days - 1)` → `arrival + days`
+  - e.g. Check-in Fri Sep 11 + 7 = Checkout Fri Sep 18 ✅
+- Same change applied to `6-payment/page.tsx` so the DB stores the correct checkout date
+- Same change applied to `components/BookingSummary.tsx` so the Récapitulatif sidebar shows the correct checkout date
+- Closed season (April–August 2026) and booked-date blocking remain unchanged
+
+### 17. Récapitulatif — Checkout Date Display Fixed (DONE)
+
+**File:** `components/BookingSummary.tsx`
+- Was using `checkInDay + (days - 1)` → showed Sep 10 instead of Sep 11
+- Fixed to `checkInDay + days` → now correctly shows Fri Sep 11 when check-in is Fri Sep 4
+
+### 18. Dates Page — Button Renamed (DONE)
+
+**File:** `app/checkout/2-dates/page.tsx`
+- Button label changed: `"INFORMATIONS →"` → `"TRANSFERT →"`
+
+### 19. Package Page — Nights Updated (DONE)
+
+**File:** `store/booking.ts`
+- Package included items: `"6 nuits d'hébergement"` → `"7 nuits d'hébergement"` (matches Fri→Fri model)
+
+---
+
 ## ✅ SESSION 2026-04-01 — WHAT WAS DONE
+
 
 ### 11. Page 4 — Add-Ons Step Now Visible & Fully Reworked (DONE)
 

@@ -109,11 +109,11 @@ export default function DateStep() {
     fetchBookedDates();
   }, []);
 
-  // Clear any stored arrival date that isn't a Saturday (stale from previous Monday-based logic)
+  // Clear any stored arrival date that isn't a Friday (stale from previous Saturday-based logic)
   useEffect(() => {
     if (arrivalDate) {
       const stored = parseLocalDate(arrivalDate);
-      if (stored.getDay() !== 6) { // 6 = Saturday
+      if (stored.getDay() !== 5) { // 5 = Friday
         setArrivalDate('');
       }
     }
@@ -123,9 +123,8 @@ export default function DateStep() {
   const checkIn = arrivalDate ? parseLocalDate(arrivalDate) : null;
   let checkOut = checkIn ? new Date(checkIn) : null;
   if (checkOut) {
-    // Checkout is on day 7 of the stay (check-in = day 1)
-    // So we add (days - 1) to check-in to land on the last day
-    checkOut.setDate(checkOut.getDate() + (days - 1));
+    // Friday → Friday: add exactly 'days' (7) so checkout lands on next Friday
+    checkOut.setDate(checkOut.getDate() + days);
   }
   
   /*if (checkOut) {
@@ -141,11 +140,11 @@ export default function DateStep() {
   const today = new Date();
   today.setHours(0, 0, 0, 0); // normalize to midnight
 
-  // Option B: next upcoming Saturday (skip today even if today IS Saturday)
-  const dayOfWeek = today.getDay(); // 0=Sun ... 6=Sat
-  const daysUntilNextSat = dayOfWeek === 6 ? 7 : (6 - dayOfWeek);
-  const firstAvailableSaturday = new Date(today);
-  firstAvailableSaturday.setDate(today.getDate() + daysUntilNextSat);
+  // Friday-only: next upcoming Friday (skip today even if today IS Friday)
+  const dayOfWeek = today.getDay(); // 0=Sun ... 5=Fri ... 6=Sat
+  const daysUntilNextFri = dayOfWeek === 5 ? 7 : (5 - dayOfWeek + 7) % 7 || 7;
+  const firstAvailableFriday = new Date(today);
+  firstAvailableFriday.setDate(today.getDate() + daysUntilNextFri);
 
   const [monthOffset, setMonthOffset] = useState(0);
   const leftMonth = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
@@ -154,7 +153,7 @@ export default function DateStep() {
   const rightMatrix = useMemo(() => getMonthMatrix(rightMonth.getFullYear(), rightMonth.getMonth()), [rightMonth]);
 
   const handleSelect = (day: Date) => {
-    if (day.getDay() !== 6) return; // Only Saturdays
+    if (day.getDay() !== 5) return; // Only Fridays
     // Use formatLocalDate instead of toISOString to avoid UTC conversion issues
     setArrivalDate(formatLocalDate(day));
     setError('');
@@ -229,17 +228,17 @@ export default function DateStep() {
                         <div key={wi} className="grid grid-cols-7 text-center">
                           {week.map((day, di) => {
                             const isCurrentMonth = day.getMonth() === month.getMonth();
-                            const isSaturday = day.getDay() === 6;
-                            const isPastDay = day < firstAvailableSaturday;
+                            const isFriday = day.getDay() === 5;
+                            const isPastDay = day < firstAvailableFriday;
                             const dayStr = formatLocalDate(day);
                             const isBooked = bookedDates.includes(dayStr);
                             // Block April (3) through August (7) 2026 as closed season
                             const isBlockedSeason = day.getFullYear() === 2026 && day.getMonth() >= 3 && day.getMonth() <= 7;
                             const isUnavailable = isPastDay || isBooked || isBlockedSeason;
-                            const isDisabled = !isCurrentMonth || !isSaturday || isUnavailable;
-                            const isAvailableSaturday = isSaturday && !isUnavailable;
-                            const isSelected = checkIn && isSameDay(day, checkIn) && isSaturday;
-                            const isCheckOut = checkOut && isSameDay(day, checkOut) && isSaturday;
+                            const isDisabled = !isCurrentMonth || !isFriday || isUnavailable;
+                            const isAvailableFriday = isFriday && !isUnavailable;
+                            const isSelected = checkIn && isSameDay(day, checkIn) && isFriday;
+                            const isCheckOut = checkOut && isSameDay(day, checkOut) && isFriday;
                             const isInSelectedRange = checkIn && checkOut && day >= checkIn && day <= checkOut;
                             return (
                               <button
@@ -252,7 +251,7 @@ export default function DateStep() {
                                   ${isInSelectedRange ? 'bg-lapoint-yellow text-lapoint-dark' : ''}
                                   ${isSelected ? 'bg-lapoint-red !border-lapoint-red !border-2 selected-date-text text-white' : ''}
                                   ${isCheckOut ? 'border-2 border-lapoint-red' : ''}
-                                  ${isAvailableSaturday && isCurrentMonth ? 'border border-lapoint-red' : ''}
+                                  ${isAvailableFriday && isCurrentMonth ? 'border border-lapoint-red' : ''}
                                 `}
                                 disabled={isDisabled}
                                 onClick={() => handleSelect(day)}
@@ -273,7 +272,7 @@ export default function DateStep() {
         </div>
       </div>
       <div className="w-full lg:w-[25%] flex-shrink-0 mt-4 sm:mt-6 lg:mt-8">
-        <BookingSummary buttonLabel="INFORMATIONS →" onButtonClick={handleNext} />
+        <BookingSummary buttonLabel="TRANSFERT →" onButtonClick={handleNext} />
       </div>
     </div>
   );

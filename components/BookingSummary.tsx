@@ -27,8 +27,8 @@ export default function BookingSummary({ buttonLabel = 'ROOM SELECTION →', onB
     // Parse the date string directly to avoid any timezone issues
     const [checkInYear, checkInMonth, checkInDay] = arrivalDate.split('-').map(Number);
     
-    // Checkout = check-in + (days - 1): day 1 is check-in, day N is checkout
-    const checkOutDate = new Date(checkInYear, checkInMonth - 1, checkInDay + (days - 1));
+    // Checkout = check-in + days: Friday → Friday (7 nights)
+    const checkOutDate = new Date(checkInYear, checkInMonth - 1, checkInDay + days);
     const checkOutYear = checkOutDate.getFullYear();
     const checkOutMonth = checkOutDate.getMonth() + 1;
     const checkOutDay = checkOutDate.getDate();
