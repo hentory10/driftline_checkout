@@ -1,7 +1,22 @@
 # 🏄 DRIFTLINE CHECKOUT — SESSION RESUME FILE
 
-> Last updated: 2026-04-01 ~22:49 (Casablanca time)
+> Last updated: 2026-04-10 ~19:43 (Casablanca time)
 > Read this file when resuming — it contains the full current state of work.
+
+---
+
+## ✅ SESSION 2026-04-10 — WHAT WAS DONE
+
+### 20. Calendar — Reopened June, July & August 2026 (DONE)
+
+**File:** `app/checkout/2-dates/page.tsx`
+
+**Change:** Narrowed the closed season from April–August → **April–May only**.
+
+**Details:**
+- Was: `day.getMonth() >= 3 && day.getMonth() <= 7` (blocked Apr, May, Jun, Jul, Aug)
+- Now: `day.getMonth() >= 3 && day.getMonth() <= 4` (blocks Apr, May only)
+- **June (6), July (7), August (8) 2026 Fridays are now selectable**
 
 ---
 

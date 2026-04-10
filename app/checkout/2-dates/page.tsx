@@ -232,8 +232,8 @@ export default function DateStep() {
                             const isPastDay = day < firstAvailableFriday;
                             const dayStr = formatLocalDate(day);
                             const isBooked = bookedDates.includes(dayStr);
-                            // Block April (3) through August (7) 2026 as closed season
-                            const isBlockedSeason = day.getFullYear() === 2026 && day.getMonth() >= 3 && day.getMonth() <= 7;
+                            // Block April (3) through May (4) 2026 as closed season; June–August are now open
+                            const isBlockedSeason = day.getFullYear() === 2026 && day.getMonth() >= 3 && day.getMonth() <= 4;
                             const isUnavailable = isPastDay || isBooked || isBlockedSeason;
                             const isDisabled = !isCurrentMonth || !isFriday || isUnavailable;
                             const isAvailableFriday = isFriday && !isUnavailable;
