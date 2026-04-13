@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
     }
 
     // --- 5. Fire n8n webhook (non-blocking — booking is confirmed regardless) ---
-    const N8N_WEBHOOK_URL = 'https://skiki.app.n8n.cloud/webhook/eb196efb-842e-4532-b2f8-4b8338719e5c';
+    const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL || '';
     try {
       await fetch(N8N_WEBHOOK_URL, {
         method: 'POST',

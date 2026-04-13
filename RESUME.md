@@ -7,6 +7,28 @@
 
 ## ✅ SESSION 2026-04-10 — WHAT WAS DONE
 
+### 21. n8n Webhook URL → Moved to Environment Variable (DONE)
+
+**File:** `app/api/booking/route.ts`
+
+**Change:** The hardcoded n8n webhook URL was replaced with `process.env.N8N_WEBHOOK_URL`.
+
+**Details:**
+- Was: `const N8N_WEBHOOK_URL = 'https://skiki.app.n8n.cloud/webhook/eb196efb-...'`
+- Now: `const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL || '';`
+- `.env.local` updated with `N8N_WEBHOOK_URL=https://skiki.app.n8n.cloud/webhook/eb196efb-842e-4532-b2f8-4b8338719e5c`
+
+**⚠️ Action required in Vercel:**
+- Go to: Vercel → Project → Settings → Environment Variables
+- Add: `N8N_WEBHOOK_URL` = `https://skiki.app.n8n.cloud/webhook/eb196efb-842e-4532-b2f8-4b8338719e5c`
+- Redeploy after adding it
+
+**To change the webhook URL in the future:**
+- **Production:** Change only the Vercel env var → Redeploy. No code change needed.
+- **Local dev:** Also update `.env.local` if you want `npm run dev` to use the new URL.
+
+---
+
 ### 20. Calendar — Reopened June, July & August 2026 (DONE)
 
 **File:** `app/checkout/2-dates/page.tsx`
