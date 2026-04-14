@@ -1,7 +1,35 @@
 # 🏄 DRIFTLINE CHECKOUT — SESSION RESUME FILE
 
-> Last updated: 2026-04-14 ~11:02 (Casablanca time)
+> Last updated: 2026-04-14 ~11:07 (Casablanca time)
 > Read this file when resuming — it contains the full current state of work.
+
+---
+
+## ✅ SESSION 2026-04-14 (continued) — French conditions + people count fix
+
+### 24. Package Page — Conditions Translated to French (DONE)
+
+**File:** `app/checkout/1-package/page.tsx`
+
+All 10 conditions for PACK COACH YOGA - ENFANT translated to French:
+- Age → **Âge**
+- Maximum → **Maximum**
+- Supervision → **Supervision**
+- Swimming → **Natation**
+- Participation → **Participation**
+- No solo activities → **Pas d'activité seul**
+- Accommodation → **Hébergement**
+- Price → **Tarif** (355 € pour les moins de 16 ans...)
+- Group limit → **Limite de groupe**
+- Right to refuse → **Droit de refus**
+
+### 25. Thank-you Page — numberOfPeople Fix (DONE)
+
+**File:** `app/checkout/6-payment/page.tsx`
+
+- Was: sending `people` (adults only = 6)
+- Now: sending `people = adults + childPeople` (total = 8)
+- Confirmation page now correctly shows 8 instead of 6
 
 ---
 

@@ -171,16 +171,16 @@ export default function PackageStep() {
                     {pkg.id === '4' ? (
                       <ul className="space-y-2">
                         {[
-                          { label: 'Age', text: 'Children must be between 8 and 15 years old' },
-                          { label: 'Maximum', text: 'Max 2 children per group' },
-                          { label: 'Supervision', text: "Children are entirely under their parent/guardian's responsibility at all times" },
-                          { label: 'Swimming', text: 'Child must be a confident swimmer' },
-                          { label: 'Participation', text: "Surf and yoga sessions are designed for adults; child participates at parent's discretion and own risk" },
-                          { label: 'No solo activities', text: 'Child cannot attend any session without their parent present' },
-                          { label: 'Accommodation', text: "Child shares the room with their parent (no extra bed provided unless requested and available)" },
-                          { label: 'Price', text: '€355 for under 16, €495 for 16 and above' },
-                          { label: 'Group limit', text: 'Maximum 2 children per group booking' },
-                          { label: 'Right to refuse', text: 'Driftline reserves the right to decline a child booking if it affects the group experience' },
+                          { label: 'Âge', text: 'Les enfants doivent avoir entre 8 et 15 ans' },
+                          { label: 'Maximum', text: 'Maximum 2 enfants par groupe' },
+                          { label: 'Supervision', text: "Les enfants sont entièrement sous la responsabilité de leurs parents ou tuteurs à tout moment" },
+                          { label: 'Natation', text: "L'enfant doit être un nageur à l'aise en mer" },
+                          { label: 'Participation', text: "Les sessions de surf et de yoga sont conçues pour les adultes ; l'enfant y participe à la discrétion et aux risques de ses parents" },
+                          { label: 'Pas d\'activité seul', text: "L'enfant ne peut assister à aucune session sans la présence de son parent" },
+                          { label: 'Hébergement', text: "L'enfant partage la chambre avec son parent (aucun lit supplémentaire fourni sauf demande explicite et disponibilité)" },
+                          { label: 'Tarif', text: '355 € pour les moins de 16 ans, 495 € pour les 16 ans et plus' },
+                          { label: 'Limite de groupe', text: 'Maximum 2 enfants par réservation de groupe' },
+                          { label: 'Droit de refus', text: 'Driftline se réserve le droit de refuser une réservation enfant si elle affecte l\'expérience du groupe' },
                         ].map((item, i) => (
                           <li key={i} className="flex items-start gap-2 text-base">
                             <svg className="mt-1 flex-shrink-0" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="#111"/><path d="M6 10.5L9 13.5L14 7.5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
