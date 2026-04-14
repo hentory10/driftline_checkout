@@ -6,7 +6,7 @@ import { content } from '../content';
 import { usePathname } from 'next/navigation';
 
 export default function BookingSummary({ buttonLabel = 'ROOM SELECTION →', onButtonClick }: { buttonLabel?: string; onButtonClick?: () => void }) {
-  const { summary, selectedPackage, arrivalDate, selectedRoom, people, selectedAddOns, addOns, rooms, roomAssignments, addOnCounts, duration } = useStore();
+  const { summary, selectedPackage, arrivalDate, selectedRoom, people, selectedAddOns, addOns, rooms, roomAssignments, addOnCounts, duration, childPeople, packages } = useStore();
   const pathname = usePathname();
   const [buttonEnabled, setButtonEnabled] = React.useState(false);
 
@@ -47,7 +47,7 @@ export default function BookingSummary({ buttonLabel = 'ROOM SELECTION →', onB
   // Dynamic button enabling based on current step
   const getButtonEnabled = () => {
     if (pathname.includes('/checkout/1-package')) {
-      return !!selectedPackage;
+      return !!selectedPackage || childPeople > 0;
     } else if (pathname.includes('/checkout/2-dates')) {
       return !!arrivalDate;
     } else if (pathname.includes('/checkout/3-room')) {
@@ -72,6 +72,14 @@ export default function BookingSummary({ buttonLabel = 'ROOM SELECTION →', onB
           <div className="text-sm sm:text-base">
             <span>{selectedPackage ? `${people} x ${selectedPackage.name}` : '-'}</span>
           </div>
+          {childPeople > 0 && (() => {
+            const enfantPkg = packages.find(p => p.id === '4');
+            return enfantPkg ? (
+              <div className="text-sm sm:text-base mt-1">
+                <span>{childPeople} x {enfantPkg.name}</span>
+              </div>
+            ) : null;
+          })()}
         </div>
         <hr className="my-2" />
         <div className="mb-3 sm:mb-4">

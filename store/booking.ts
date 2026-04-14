@@ -56,6 +56,8 @@ type State = {
   clearAddOnData: () => void;
   clearTravellerData: () => void;
   clearDateData: () => void;
+  childPeople: number;
+  setChildPeople: (n: number) => void;
   discountCode: string;
   setDiscountCode: (code: string) => void;
   appliedDiscount: number;
@@ -84,7 +86,7 @@ export const useStore = create<State>((set, get) => ({
     {
       id: '4',
       name: 'PACK COACH YOGA - ENFANT',
-      price: 370,
+      price: 355,
       levels: ['beginner', 'intermediate', 'advanced'],
       includedItems: [
         '7 nuits d\'hébergement',
@@ -168,6 +170,7 @@ export const useStore = create<State>((set, get) => ({
     arrivalDate: '',
     selectedRoom: null,
     people: 1,
+    childPeople: 0,
     travellers: [{ name: '' }],
     selectedAddOns: [],
     insurance: false,
@@ -201,6 +204,8 @@ export const useStore = create<State>((set, get) => ({
   setDiscountCode: (code) => set({ discountCode: code }),
   appliedDiscount: 0,
   setAppliedDiscount: (discount) => set({ appliedDiscount: discount }),
+  childPeople: 0,
+  setChildPeople: (n) => set({ childPeople: n }),
 }));
 
 // Price calculation and forceFullPayment logic
@@ -219,6 +224,9 @@ useStore.subscribe((state) => {
   // const nights = 7;
   let subtotal = 0;
   if (pkg) subtotal += pkg.price * state.people;
+  // Add ENFANT package price if children are selected
+  const enfantPkg = state.packages.find(p => p.id === '4');
+  if (enfantPkg && state.childPeople > 0) subtotal += enfantPkg.price * state.childPeople;
   subtotal += roomTotal;
   subtotal += state.addOns.reduce((sum, addOn) => {
     if (addOn.type === 'per-person') {

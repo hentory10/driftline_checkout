@@ -7,25 +7,48 @@
 
 ## ✅ SESSION 2026-04-14 — WHAT WAS DONE
 
-### 22. Package Page — New PACK COACH YOGA - ENFANT Added (DONE)
+### 22. Package Page — New PACK COACH YOGA - ENFANT + Group Cap Logic (DONE)
 
 **Files:** `store/booking.ts`, `app/checkout/1-package/page.tsx`
 
-**Changes:**
+#### Changes:
 
-1. **New package added** in `store/booking.ts`:
-   - ID: `'4'`
-   - Name: `PACK COACH YOGA - ENFANT`
-   - Price: **370 €**
-   - Same `includedItems` as the adult pack
-   - Appears as a second card below PACK COACH YOGA on the package selection page
+**1. New package added** in `store/booking.ts`:
+- ID: `'4'`
+- Name: `PACK COACH YOGA - ENFANT`
+- Price: **355 €**
 
-2. **Button renamed** in `app/checkout/1-package/page.tsx`:
-   - Was: `Ce qui est inclus`
-   - Now: `Conditions`
-   - Applies to all package cards (the button is shared in the map loop)
+**2. Button label** in `app/checkout/1-package/page.tsx`:
+- PACK COACH YOGA → **"Ce qui est inclus"** (unchanged)
+- PACK COACH YOGA - ENFANT → **"Conditions"**
+
+**3. Conditions dropdown** for ENFANT (replaces the "Inclus par semaine" list):
+- Age — Children must be between 8 and 15 years old
+- Maximum — Max 2 children per group
+- Supervision, Swimming, Participation, No solo activities, Accommodation
+- Price — €355 for under 16, €495 for 16 and above
+- Group limit — Maximum 2 children per group booking
+- Right to refuse
+
+**4. Independent dual-counter logic (group cap = 8):**
+- Both packages can be selected **simultaneously**
+- `childPeople` added to store (separate from `people`)
+- `setChildPeople` action added; `childPeople: 0` in reset
+- ENFANT `+` capped at `Math.min(2, 8 − adults)`:
+  - 8 adults → 0 children (disabled)
+  - 7 adults → max 1 child
+  - 6 adults → max 2 children
+- Adult `+` capped at `8 − childPeople`
+- Each card shows its own red border independently
+- ENFANT card shows `childPeople` count; adult card shows `people` count
+- Price calculation updated: `subtotal += enfantPkg.price × childPeople`
+
+**⚠️ Downstream still needed (not done yet):**
+- `BookingSummary.tsx` — should also display ENFANT count + price
+- `6-payment/page.tsx` + `app/api/booking/route.ts` — child count not yet sent to DB
 
 ---
+
 
 ## ✅ SESSION 2026-04-10 — WHAT WAS DONE
 
