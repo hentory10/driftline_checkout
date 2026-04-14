@@ -64,7 +64,15 @@ export default async function ConfirmationPage({ params }: { params: { id: strin
         <div className="mb-2">Arrivée : {checkin}</div>
         <div className="mb-2">Départ : {checkout}</div>
         <div className="mb-2">Durée : {booking.duration || '—'}</div>
-        <div className="mb-2">Nombre de personnes : {booking.numberOfPeople}</div>
+        <div className="mb-2">
+          Nombre de personnes : {
+            booking.numberOfAdults != null
+              ? booking.numberOfChildren > 0
+                ? `${booking.numberOfPeople} (${booking.numberOfAdults} adulte${booking.numberOfAdults > 1 ? 's' : ''} + ${booking.numberOfChildren} enfant${booking.numberOfChildren > 1 ? 's' : ''})`
+                : `${booking.numberOfPeople}`
+              : booking.numberOfPeople
+          }
+        </div>
 
         {/* Transfer options */}
         {booking.transfer_options && (

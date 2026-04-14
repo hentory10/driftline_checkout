@@ -26,6 +26,7 @@ export default function PaymentStep() {
     people,
     rooms,
     addOns,
+    childPeople,
   } = useStore();
   const router = useRouter();
   const fullTotal = summary?.total || 0;
@@ -92,7 +93,9 @@ export default function PaymentStep() {
         arrivalDate: arrivalDate || '',
         checkoutDate: checkoutStr,
         duration: duration,
-        people: people || 1,
+        people: (people || 1) + (childPeople || 0),
+        numberOfAdults: people || 1,
+        numberOfChildren: childPeople || 0,
         travellers: (travellers || []).map((t: any) => ({
           firstName:  t.firstName,
           lastName:   t.lastName,

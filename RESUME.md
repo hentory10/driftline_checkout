@@ -1,7 +1,27 @@
 # 🏄 DRIFTLINE CHECKOUT — SESSION RESUME FILE
 
-> Last updated: 2026-04-14 ~09:43 (Casablanca time)
+> Last updated: 2026-04-14 ~11:02 (Casablanca time)
 > Read this file when resuming — it contains the full current state of work.
+
+---
+
+## ✅ SESSION 2026-04-14 (continued) — numberOfAdults + numberOfChildren
+
+### 23. DB + Code — Adults/Children Split (DONE)
+
+**Supabase migration applied** — 2 new columns added to `public.Booking`:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `numberOfAdults` | integer | Adults only (PACK COACH YOGA count) |
+| `numberOfChildren` | integer | Children only (PACK COACH YOGA - ENFANT count) |
+
+`numberOfPeople` remains = adults + children (total headcount)
+
+**Files updated:**
+- `app/checkout/6-payment/page.tsx` — sends `numberOfAdults`, `numberOfChildren`, and `people` (=total) to API
+- `app/api/booking/route.ts` — reads both fields, saves to DB, includes in n8n webhook
+- `app/confirmation/[id]/page.tsx` — shows breakdown: `8 (6 adultes + 2 enfants)` when children > 0
 
 ---
 
