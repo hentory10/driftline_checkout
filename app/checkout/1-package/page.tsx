@@ -102,7 +102,7 @@ export default function PackageStep() {
                       onClick={() => setOpenIncluded(openIncluded === pkg.id ? null : pkg.id)}
                       aria-pressed={openIncluded === pkg.id}
                     >
-                      Ce qui est inclus
+                      Conditions
                       <span className={`transition-transform ${openIncluded === pkg.id ? 'rotate-180' : ''}`}>▾</span>
                     </button>
                     <div className="flex items-center justify-end sm:justify-start gap-2 w-auto sm:w-auto ml-auto sm:ml-0">

@@ -81,6 +81,22 @@ export const useStore = create<State>((set, get) => ({
         'Transfert aéroport',
       ],
     },
+    {
+      id: '4',
+      name: 'PACK COACH YOGA - ENFANT',
+      price: 370,
+      levels: ['beginner', 'intermediate', 'advanced'],
+      includedItems: [
+        '7 nuits d\'hébergement',
+        '7 petits-déjeuners, 6 déjeuners et 6 dîners',
+        'Rooftop vue océan dédié au yoga',
+        'Sessions de yoga selon votre programme',
+        'Cours de surf : 2(jrs) × 2 heures',
+        '1 excursion culturelle',
+        'Dîner exclusif sur le rooftop + musique live',
+        'Transfert aéroport',
+      ],
+    },
   ],
   rooms: [
     { id: '1', name: 'Tamazirt room - Oubaha', description: 'Tamazirt room - Oubaha', price: 140, capacity: 2, img: '/images/room1.jpg' },

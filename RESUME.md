@@ -1,7 +1,29 @@
 # 🏄 DRIFTLINE CHECKOUT — SESSION RESUME FILE
 
-> Last updated: 2026-04-10 ~19:43 (Casablanca time)
+> Last updated: 2026-04-14 ~09:43 (Casablanca time)
 > Read this file when resuming — it contains the full current state of work.
+
+---
+
+## ✅ SESSION 2026-04-14 — WHAT WAS DONE
+
+### 22. Package Page — New PACK COACH YOGA - ENFANT Added (DONE)
+
+**Files:** `store/booking.ts`, `app/checkout/1-package/page.tsx`
+
+**Changes:**
+
+1. **New package added** in `store/booking.ts`:
+   - ID: `'4'`
+   - Name: `PACK COACH YOGA - ENFANT`
+   - Price: **370 €**
+   - Same `includedItems` as the adult pack
+   - Appears as a second card below PACK COACH YOGA on the package selection page
+
+2. **Button renamed** in `app/checkout/1-package/page.tsx`:
+   - Was: `Ce qui est inclus`
+   - Now: `Conditions`
+   - Applies to all package cards (the button is shared in the map loop)
 
 ---
 
