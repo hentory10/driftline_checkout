@@ -1,7 +1,65 @@
 # 🏄 DRIFTLINE CHECKOUT — SESSION RESUME FILE
 
-> Last updated: 2026-04-14 ~11:07 (Casablanca time)
+> Last updated: 2026-04-17 ~20:58 (Casablanca time)
 > Read this file when resuming — it contains the full current state of work.
+> ✅ Committed & pushed to GitHub after this session.
+
+---
+
+## ✅ SESSION 2026-04-17 — Calendar: 28-Day Rotating Check-in Cycle
+
+### 26. Calendar — 28-Day Rotating Cycle Logic (DONE)
+
+**File:** `app/checkout/2-dates/page.tsx`
+
+#### What changed:
+
+The old Friday-only logic was replaced with a **28-day rotating cycle** anchored to **June 5, 2026** (first Friday of the first open month).
+
+**The pattern (repeats every 28 days):**
+| Offset in 28-day period | Date (example June) | Selectable Day |
+|---|---|---|
+| Day 0 | Jun 5 (Fri) | **Friday only** ✅ |
+| Day 8 | Jun 13 (Sat) | **Saturday only** ✅ |
+| Day 16 | Jun 21 (Sun) | **Sunday only** ✅ |
+| Day 17–27 | Jun 29–Jul 2 | ❌ Gap (Mon Tue Wed Thu + more) |
+| Day 28 (= new period day 0) | Jul 3 (Fri) | **Friday only** ✅ → cycle repeats |
+
+**Rules:**
+- Only **3 selectable check-in dates per 28-day period**: one Friday, one Saturday, one Sunday
+- After Sunday's stay (7 nights checkout on Sunday), Mon–Thu are skipped → next Friday starts
+- All other days (Mon–Thu, and Fri/Sat/Sun that don't fall on the exact offset) are ❌
+- Never 2 selectable dates in the same calendar week
+- Anchor: `new Date(2026, 5, 5)` = June 5, 2026
+
+**Verified selectable dates:**
+| Date | Offset % 28 | Day | ✅/❌ |
+|------|-------------|-----|------|
+| Jun 5 | 0 | Fri | ✅ |
+| Jun 13 | 8 | Sat | ✅ |
+| Jun 21 | 16 | Sun | ✅ |
+| Jun 29–Jul 2 | 24–27 | Mon–Thu | ❌ gap |
+| Jul 3 | 0 | Fri | ✅ |
+| Jul 11 | 8 | Sat | ✅ |
+| Jul 19 | 16 | Sun | ✅ |
+| Jul 31 | 0 | Fri | ✅ |
+| Aug 8 | 8 | Sat | ✅ |
+| Aug 16 | 16 | Sun | ✅ |
+
+**Key implementation:**
+```typescript
+const CYCLE_ANCHOR = new Date(2026, 5, 5); // Jun 5, 2026 (Friday)
+
+function isTargetDay(date: Date): boolean {
+  const daysSinceAnchor = Math.round((date - CYCLE_ANCHOR) / 86400000);
+  if (daysSinceAnchor < 0) return false;
+  const offset = daysSinceAnchor % 28;
+  if (offset === 0)  return date.getDay() === 5; // Friday
+  if (offset === 8)  return date.getDay() === 6; // Saturday
+  if (offset === 16) return date.getDay() === 0; // Sunday
+  return false;
+}
+```
 
 ---
 

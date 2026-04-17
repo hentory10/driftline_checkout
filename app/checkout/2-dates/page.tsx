@@ -61,6 +61,26 @@ function isInRange(day: Date, start: Date, end: Date) {
   return day >= start && day <= end;
 }
 
+// 28-day repeating cycle anchored to Jun 5, 2026 (first Friday of first open month):
+//   Offset  0 → Friday   check-in  (Jun 5, Jul 3, Jul 31, ...)
+//   Offset  8 → Saturday check-in  (Jun 13, Jul 11, Aug 8, ...)
+//   Offset 16 → Sunday   check-in  (Jun 21, Jul 19, Aug 16, ...)
+//   Offset 17–27 → ❌ gap (Mon–Thu + the next Fri starts a new period at offset 28)
+// Gap breakdown after Sunday: Mon(+17) Tue(+18) Wed(+19) Thu(+20) → skip 4 days → Fri(+21)
+// Wait — +28 from anchor = next Friday. Gaps (Mon–Thu) fill days 17–27 between Sun and next Fri.
+const CYCLE_ANCHOR = new Date(2026, 5, 5); // Jun 5, 2026 — confirmed Friday
+
+function isTargetDay(date: Date): boolean {
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const daysSinceAnchor = Math.round((date.getTime() - CYCLE_ANCHOR.getTime()) / msPerDay);
+  if (daysSinceAnchor < 0) return false; // before cycle starts
+  const offset = daysSinceAnchor % 28;
+  if (offset === 0)  return date.getDay() === 5; // Friday
+  if (offset === 8)  return date.getDay() === 6; // Saturday
+  if (offset === 16) return date.getDay() === 0; // Sunday
+  return false; // all other days are not selectable
+}
+
 export default function DateStep() {
   const { arrivalDate, setArrivalDate, selectedPackage, people, duration } = useStore();
   const [error, setError] = useState('');
@@ -109,11 +129,11 @@ export default function DateStep() {
     fetchBookedDates();
   }, []);
 
-  // Clear any stored arrival date that isn't a Friday (stale from previous Saturday-based logic)
+  // Clear any stored arrival date that isn't a Fri/Sat/Sun
   useEffect(() => {
     if (arrivalDate) {
       const stored = parseLocalDate(arrivalDate);
-      if (stored.getDay() !== 5) { // 5 = Friday
+      if (!isTargetDay(stored)) {
         setArrivalDate('');
       }
     }
@@ -123,7 +143,7 @@ export default function DateStep() {
   const checkIn = arrivalDate ? parseLocalDate(arrivalDate) : null;
   let checkOut = checkIn ? new Date(checkIn) : null;
   if (checkOut) {
-    // Friday → Friday: add exactly 'days' (7) so checkout lands on next Friday
+    // Fri→Fri, Sat→Sat, Sun→Sun: adding 7 days always lands on the same day of the week
     checkOut.setDate(checkOut.getDate() + days);
   }
   
@@ -140,11 +160,7 @@ export default function DateStep() {
   const today = new Date();
   today.setHours(0, 0, 0, 0); // normalize to midnight
 
-  // Friday-only: next upcoming Friday (skip today even if today IS Friday)
-  const dayOfWeek = today.getDay(); // 0=Sun ... 5=Fri ... 6=Sat
-  const daysUntilNextFri = dayOfWeek === 5 ? 7 : (5 - dayOfWeek + 7) % 7 || 7;
-  const firstAvailableFriday = new Date(today);
-  firstAvailableFriday.setDate(today.getDate() + daysUntilNextFri);
+  // Any day on or before today is past — target-day-per-week logic handles selectability
 
   const [monthOffset, setMonthOffset] = useState(0);
   const leftMonth = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
@@ -153,7 +169,7 @@ export default function DateStep() {
   const rightMatrix = useMemo(() => getMonthMatrix(rightMonth.getFullYear(), rightMonth.getMonth()), [rightMonth]);
 
   const handleSelect = (day: Date) => {
-    if (day.getDay() !== 5) return; // Only Fridays
+    if (!isTargetDay(day)) return; // Only the target day for that week (Fri/Sat/Sun/Sat)
     // Use formatLocalDate instead of toISOString to avoid UTC conversion issues
     setArrivalDate(formatLocalDate(day));
     setError('');
@@ -228,17 +244,17 @@ export default function DateStep() {
                         <div key={wi} className="grid grid-cols-7 text-center">
                           {week.map((day, di) => {
                             const isCurrentMonth = day.getMonth() === month.getMonth();
-                            const isFriday = day.getDay() === 5;
-                            const isPastDay = day < firstAvailableFriday;
+                            const isTarget = isTargetDay(day); // Fri (wk1), Sat (wk2), Sun (wk3), Sat (wk4)
+                            const isPastDay = day <= today;
                             const dayStr = formatLocalDate(day);
                             const isBooked = bookedDates.includes(dayStr);
                             // Block April (3) through May (4) 2026 as closed season; June–August are now open
                             const isBlockedSeason = day.getFullYear() === 2026 && day.getMonth() >= 3 && day.getMonth() <= 4;
                             const isUnavailable = isPastDay || isBooked || isBlockedSeason;
-                            const isDisabled = !isCurrentMonth || !isFriday || isUnavailable;
-                            const isAvailableFriday = isFriday && !isUnavailable;
-                            const isSelected = checkIn && isSameDay(day, checkIn) && isFriday;
-                            const isCheckOut = checkOut && isSameDay(day, checkOut) && isFriday;
+                            const isDisabled = !isCurrentMonth || !isTarget || isUnavailable;
+                            const isAvailableTargetDay = isTarget && !isUnavailable;
+                            const isSelected = checkIn && isSameDay(day, checkIn);
+                            const isCheckOut = checkOut && isSameDay(day, checkOut);
                             const isInSelectedRange = checkIn && checkOut && day >= checkIn && day <= checkOut;
                             return (
                               <button
@@ -251,7 +267,7 @@ export default function DateStep() {
                                   ${isInSelectedRange ? 'bg-lapoint-yellow text-lapoint-dark' : ''}
                                   ${isSelected ? 'bg-lapoint-red !border-lapoint-red !border-2 selected-date-text text-white' : ''}
                                   ${isCheckOut ? 'border-2 border-lapoint-red' : ''}
-                                  ${isAvailableFriday && isCurrentMonth ? 'border border-lapoint-red' : ''}
+                                  ${isAvailableTargetDay && isCurrentMonth ? 'border border-lapoint-red' : ''}
                                 `}
                                 disabled={isDisabled}
                                 onClick={() => handleSelect(day)}
