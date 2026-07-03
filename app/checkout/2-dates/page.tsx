@@ -71,6 +71,15 @@ function isInRange(day: Date, start: Date, end: Date) {
 const CYCLE_ANCHOR = new Date(2026, 5, 5); // Jun 5, 2026 — confirmed Friday
 
 function isTargetDay(date: Date): boolean {
+  // Override: Jan 3, 2027 is NOT selectable
+  if (date.getFullYear() === 2027 && date.getMonth() === 0 && date.getDate() === 3) {
+    return false;
+  }
+  // Override: Jan 8, 2027 IS selectable
+  if (date.getFullYear() === 2027 && date.getMonth() === 0 && date.getDate() === 8) {
+    return true;
+  }
+
   const msPerDay = 24 * 60 * 60 * 1000;
   const daysSinceAnchor = Math.round((date.getTime() - CYCLE_ANCHOR.getTime()) / msPerDay);
   if (daysSinceAnchor < 0) return false; // before cycle starts

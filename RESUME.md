@@ -1,8 +1,21 @@
 # 🏄 DRIFTLINE CHECKOUT — SESSION RESUME FILE
 
-> Last updated: 2026-04-17 ~20:58 (Casablanca time)
+> Last updated: 2026-07-03 ~09:22 (Casablanca time)
 > Read this file when resuming — it contains the full current state of work.
 > ✅ Committed & pushed to GitHub after this session.
+
+---
+
+## ✅ SESSION 2026-07-03 — Calendar: Override Specific Dates
+
+### 27. Calendar — January 3 & 8, 2027 Overrides (DONE)
+
+**File:** [app/checkout/2-dates/page.tsx](file:///c:/Users/PCG/Desktop/My%20businesses/Cursor-Tutorial-main/app/checkout/2-dates/page.tsx)
+
+#### What changed:
+- Added manual overrides for specific dates in January 2027:
+  - **January 3, 2027** is now **unselectable** (red circle removed).
+  - **January 8, 2027** is now **selectable** (red circle added).
 
 ---
 
