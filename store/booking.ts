@@ -70,7 +70,7 @@ export const useStore = create<State>((set, get) => ({
     {
       id: '3',
       name: 'PACK COACH YOGA',
-      price: 495,
+      price: 595,
       levels: ['beginner', 'intermediate', 'advanced'],
       includedItems: [
         '7 nuits d\'hébergement',

@@ -6,6 +6,23 @@
 
 ---
 
+## ✅ SESSION 2026-10-19 — Price Change + ENFANT Package Hidden
+
+### 28. PACK COACH YOGA — 495 € → 595 € (DONE)
+
+**File:** `store/booking.ts`
+- Package id `'3'` price: `495` → `595`
+- Also updated the "Tarif" condition text in `app/checkout/1-package/page.tsx` (16 ans et plus → 595 €)
+
+### 29. PACK COACH YOGA - ENFANT — Hidden (DONE)
+
+**File:** `app/checkout/1-package/page.tsx`
+- Package list now uses `packages.filter(pkg => pkg.id !== '4')` — ENFANT card no longer shown
+- Package still exists in the store; `childPeople` stays 0, so totals are unaffected
+- Re-enable: remove the `.filter(...)`
+
+---
+
 ## ✅ SESSION 2026-07-03 — Calendar: Override Specific Dates
 
 ### 27. Calendar — January 3 & 8, 2027 Overrides (DONE)

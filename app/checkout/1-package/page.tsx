@@ -87,7 +87,8 @@ export default function PackageStep() {
           <h2 id="package-step-title" className="text-xl sm:text-2xl mb-3 sm:mb-4">Choisissez votre formule</h2>
           {error && <ErrorSummary message={error} />}
           <div className="space-y-4 sm:space-y-6">
-            {packages.map(pkg => (
+            {/* PACK COACH YOGA - ENFANT (id '4') hidden for now — remove the filter to show it again */}
+            {packages.filter(pkg => pkg.id !== '4').map(pkg => (
               <div key={pkg.id} className={`card flex flex-col gap-3 sm:gap-4 ${pkg.id === '4' ? (childPeople > 0 ? 'border-lapoint-red border-2' : '') : (selectedPackage?.id === pkg.id ? 'border-lapoint-red border-2' : '')}`}>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 w-full">
                   <div className="flex flex-col w-full sm:min-w-[220px]">
@@ -178,7 +179,7 @@ export default function PackageStep() {
                           { label: 'Participation', text: "Les sessions de surf et de yoga sont conçues pour les adultes ; l'enfant y participe à la discrétion et aux risques de ses parents" },
                           { label: 'Pas d\'activité seul', text: "L'enfant ne peut assister à aucune session sans la présence de son parent" },
                           { label: 'Hébergement', text: "L'enfant partage la chambre avec son parent (aucun lit supplémentaire fourni sauf demande explicite et disponibilité)" },
-                          { label: 'Tarif', text: '355 € pour les moins de 16 ans, 495 € pour les 16 ans et plus' },
+                          { label: 'Tarif', text: '355 € pour les moins de 16 ans, 595 € pour les 16 ans et plus' },
                           { label: 'Limite de groupe', text: 'Maximum 2 enfants par réservation de groupe' },
                           { label: 'Droit de refus', text: 'Driftline se réserve le droit de refuser une réservation enfant si elle affecte l\'expérience du groupe' },
                         ].map((item, i) => (
